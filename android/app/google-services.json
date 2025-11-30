@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "373796572358",
+    "project_id": "akhmadfauziiot",
+    "storage_bucket": "akhmadfauziiot.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373796572358:android:8a396d39f373e73272dbc7",
+        "android_client_info": {
+          "package_name": "com.google.iotapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6l10nuYl1d7O45KlxVGLslZ9i5e8VrAw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
