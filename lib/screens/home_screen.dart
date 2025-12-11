@@ -104,6 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(child: _buildLampCard(device, prov)),
                           ],
                         ),
+                        SizedBox(height: 12),
+                        _buildModeCard(device, prov),
                       ],
                     ),
                   ),
@@ -354,9 +356,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // Pump Control Card (Compact)
   Widget _buildPumpCard(device, DeviceProvider prov) {
     final isActive = device.lampStatus;
+    final isAutoMode = device.pumpMode == 'auto';
 
     return GestureDetector(
-      onTap: () => prov.toggleLamp(device),
+      onTap: isAutoMode ? null : () => prov.toggleLamp(device),
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
         padding: EdgeInsets.all(20),
@@ -383,45 +386,75 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: isActive
-                    ? Colors.white.withOpacity(0.2)
-                    : Color(0xFFF5F5F5),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(
-                isActive ? Icons.water_drop_rounded : Icons.water_drop_outlined,
-                color: isActive ? Colors.white : Color(0xFF4CAF50),
-                size: 24,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: isActive
+                        ? Colors.white.withOpacity(0.2)
+                        : Color(0xFFF5F5F5),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(
+                    isActive
+                        ? Icons.water_drop_rounded
+                        : Icons.water_drop_outlined,
+                    color: isActive
+                        ? Colors.white
+                        : (isAutoMode ? Color(0xFF9CA3AF) : Color(0xFF4CAF50)),
+                    size: 24,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Pompa',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: isActive
+                        ? Colors.white.withOpacity(0.9)
+                        : (isAutoMode ? Color(0xFF9CA3AF) : Color(0xFF6B7280)),
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  isActive ? 'Menyiram' : 'Mati',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: isActive
+                        ? Colors.white
+                        : (isAutoMode ? Color(0xFF9CA3AF) : Color(0xFF1F2937)),
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 16),
-            Text(
-              'Pompa',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: isActive
-                    ? Colors.white.withOpacity(0.9)
-                    : Color(0xFF6B7280),
+            if (isAutoMode)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF6B7280),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    'AUTO',
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              isActive ? 'Menyiram' : 'Mati',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: isActive ? Colors.white : Color(0xFF1F2937),
-                letterSpacing: -0.5,
-              ),
-            ),
           ],
         ),
       ),
@@ -497,6 +530,120 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.w700,
                 color: isActive ? Colors.white : Color(0xFF1F2937),
                 letterSpacing: -0.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Mode Control Card
+  Widget _buildModeCard(device, DeviceProvider prov) {
+    final isAuto = device.pumpMode == 'auto';
+
+    return GestureDetector(
+      onTap: () => prov.toggleMode(device),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Color(0xFFE5E7EB),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 10,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: isAuto
+                      ? [Color(0xFF3B82F6), Color(0xFF60A5FA)]
+                      : [Color(0xFF6B7280), Color(0xFF9CA3AF)],
+                ),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(
+                isAuto ? Icons.auto_mode_rounded : Icons.touch_app_rounded,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Atur Mode Pompa Air',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF6B7280),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    isAuto ? 'Otomatis' : 'Manual',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1F2937),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Toggle Switch
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              width: 56,
+              height: 32,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: isAuto
+                      ? [Color(0xFF3B82F6), Color(0xFF60A5FA)]
+                      : [Color(0xFFE5E7EB), Color(0xFFD1D5DB)],
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    left: isAuto ? 26 : 2,
+                    top: 2,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

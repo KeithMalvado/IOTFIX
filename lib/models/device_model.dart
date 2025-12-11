@@ -13,6 +13,8 @@ class DeviceModel {
   String topicLampStatus; // status/relay2 (lampu)
   String topicPumpControl; // kontrol/relay (pompa)
   String topicPumpStatus; // status/relay (pompa)
+  String topicModeControl; // kontrol/mode
+  String topicModeStatus; // status/mode
 
   // Sensor Data
   double soilMoisture; // Kelembapan tanah (%)
@@ -20,6 +22,7 @@ class DeviceModel {
   double airHumidity; // Kelembapan udara (%)
   bool lampStatus; // Status lampu (ON/OFF)
   bool pumpStatus; // Status pompa (ON/OFF)
+  String pumpMode; // Mode pompa: "manual" atau "auto"
 
   DateTime lastSeen;
 
@@ -36,11 +39,14 @@ class DeviceModel {
     this.topicLampStatus = 'status/relay2',
     this.topicPumpControl = 'kontrol/relay',
     this.topicPumpStatus = 'status/relay',
+    this.topicModeControl = 'kontrol/mode',
+    this.topicModeStatus = 'status/mode',
     this.soilMoisture = 0,
     this.airTemperature = 0,
     this.airHumidity = 0,
     this.lampStatus = false,
     this.pumpStatus = false,
+    this.pumpMode = 'manual',
     DateTime? lastSeen,
   }) : lastSeen = lastSeen ?? DateTime.now();
 
@@ -65,11 +71,14 @@ class DeviceModel {
     String? topicLampStatus,
     String? topicPumpControl,
     String? topicPumpStatus,
+    String? topicModeControl,
+    String? topicModeStatus,
     double? soilMoisture,
     double? airTemperature,
     double? airHumidity,
     bool? lampStatus,
     bool? pumpStatus,
+    String? pumpMode,
     DateTime? lastSeen,
   }) {
     return DeviceModel(
@@ -85,11 +94,14 @@ class DeviceModel {
       topicLampStatus: topicLampStatus ?? this.topicLampStatus,
       topicPumpControl: topicPumpControl ?? this.topicPumpControl,
       topicPumpStatus: topicPumpStatus ?? this.topicPumpStatus,
+      topicModeControl: topicModeControl ?? this.topicModeControl,
+      topicModeStatus: topicModeStatus ?? this.topicModeStatus,
       soilMoisture: soilMoisture ?? this.soilMoisture,
       airTemperature: airTemperature ?? this.airTemperature,
       airHumidity: airHumidity ?? this.airHumidity,
       lampStatus: lampStatus ?? this.lampStatus,
       pumpStatus: pumpStatus ?? this.pumpStatus,
+      pumpMode: pumpMode ?? this.pumpMode,
       lastSeen: lastSeen ?? this.lastSeen,
     );
   }
@@ -106,11 +118,14 @@ class DeviceModel {
         'topicLampStatus': topicLampStatus,
         'topicPumpControl': topicPumpControl,
         'topicPumpStatus': topicPumpStatus,
+        'topicModeControl': topicModeControl,
+        'topicModeStatus': topicModeStatus,
         'soilMoisture': soilMoisture,
         'airTemperature': airTemperature,
         'airHumidity': airHumidity,
         'lampStatus': lampStatus,
         'pumpStatus': pumpStatus,
+        'pumpMode': pumpMode,
         'lastSeen': lastSeen.toIso8601String(),
       };
 
@@ -128,11 +143,14 @@ class DeviceModel {
       topicLampStatus: json['topicLampStatus'] ?? 'status/relay2',
       topicPumpControl: json['topicPumpControl'] ?? 'kontrol/relay',
       topicPumpStatus: json['topicPumpStatus'] ?? 'status/relay',
+      topicModeControl: json['topicModeControl'] ?? 'kontrol/mode',
+      topicModeStatus: json['topicModeStatus'] ?? 'status/mode',
       soilMoisture: (json['soilMoisture'] ?? 0).toDouble(),
       airTemperature: (json['airTemperature'] ?? 0).toDouble(),
       airHumidity: (json['airHumidity'] ?? 0).toDouble(),
       lampStatus: json['lampStatus'] ?? false,
       pumpStatus: json['pumpStatus'] ?? false,
+      pumpMode: json['pumpMode'] ?? 'manual',
       lastSeen: DateTime.tryParse(json['lastSeen'] ?? '') ?? DateTime.now(),
     );
   }
