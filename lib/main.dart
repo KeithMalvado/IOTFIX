@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'app.dart';
 import 'screens/home_screen.dart';
 import 'providers/device_provider.dart';
-import 'services/mqtt_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +14,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => DeviceProvider()),
       ],
-      child: App(child: const HomeScreen()),
+      child: const App(child: HomeScreen()),
     ),
   );
 }

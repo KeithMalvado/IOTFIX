@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/device_model.dart';
 import '../constants/colors.dart';
 
+// DEPRECATED: File ini tidak dipakai lagi di HomeScreen yang baru
+// Disimpan untuk backward compatibility
+
 class DeviceCard extends StatelessWidget {
   final DeviceModel device;
   final VoidCallback onToggle;
@@ -10,6 +13,7 @@ class DeviceCard extends StatelessWidget {
   final VoidCallback onDetail;
 
   const DeviceCard({
+    super.key,
     required this.device,
     required this.onToggle,
     required this.onEdit,
@@ -23,15 +27,17 @@ class DeviceCard extends StatelessWidget {
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: Icon(Icons.devices),
+        leading: const Icon(Icons.devices),
         title: Text(device.name),
-        subtitle: Text('Last: ${device.lastTemp} °C'),
+        subtitle: Text(
+            'Temp: ${device.airTemperature} °C | Humidity: ${device.airHumidity}%'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(device.isOn ? Icons.power : Icons.power_off,
-                  color: device.isOn ? AppColors.lightBlue : Colors.grey),
+              icon: Icon(device.relayStatus ? Icons.power : Icons.power_off,
+                  color:
+                      device.relayStatus ? AppColors.lightBlue : Colors.grey),
               onPressed: onToggle,
             ),
             PopupMenuButton<String>(
@@ -40,7 +46,7 @@ class DeviceCard extends StatelessWidget {
                 if (v == 'delete') onDelete();
                 if (v == 'detail') onDetail();
               },
-              itemBuilder: (ctx) => [
+              itemBuilder: (ctx) => const [
                 PopupMenuItem(value: 'detail', child: Text('Lihat Detail')),
                 PopupMenuItem(value: 'edit', child: Text('Edit Mesin')),
                 PopupMenuItem(value: 'delete', child: Text('Hapus Mesin')),

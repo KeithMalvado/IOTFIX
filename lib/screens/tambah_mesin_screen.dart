@@ -14,13 +14,12 @@ class _TambahMesinScreenState extends State<TambahMesinScreen> {
   final formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
-  final TextEditingController nameC = TextEditingController();
+  final TextEditingController nameC =
+      TextEditingController(text: "Smart Garden System");
   final TextEditingController brokerC =
-      TextEditingController(text: "rust.bianisme.xyz");
-  final TextEditingController userC = TextEditingController(text: "fabian");
-  final TextEditingController passC = TextEditingController(text: "010105");
-  final TextEditingController topicC =
-      TextEditingController(text: "iot/device/temp");
+      TextEditingController(text: "broker.hivemq.com");
+  final TextEditingController userC = TextEditingController();
+  final TextEditingController passC = TextEditingController();
 
   @override
   void dispose() {
@@ -28,7 +27,6 @@ class _TambahMesinScreenState extends State<TambahMesinScreen> {
     brokerC.dispose();
     userC.dispose();
     passC.dispose();
-    topicC.dispose();
     super.dispose();
   }
 
@@ -50,7 +48,6 @@ class _TambahMesinScreenState extends State<TambahMesinScreen> {
         broker: brokerC.text,
         username: userC.text,
         password: passC.text,
-        topic: topicC.text,
       );
 
       await prov.firestore.addDevice(newDevice);
@@ -58,7 +55,7 @@ class _TambahMesinScreenState extends State<TambahMesinScreen> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Mesin berhasil ditambahkan!'),
+            content: Text('Device berhasil ditambahkan!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -84,20 +81,33 @@ class _TambahMesinScreenState extends State<TambahMesinScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Tambah Mesin")),
+      appBar: AppBar(
+        title: const Text("Tambah Device IoT"),
+        backgroundColor: Colors.blue[700],
+        foregroundColor: Colors.white,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: formKey,
           child: ListView(
             children: [
+              const Text(
+                'Konfigurasi MQTT Broker',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: nameC,
                 decoration: const InputDecoration(
-                  labelText: "Nama Mesin",
+                  labelText: "Nama Device",
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.devices),
                 ),
-                validator: (v) => v!.isEmpty ? "Nama mesin harus diisi" : null,
+                validator: (v) => v!.isEmpty ? "Nama device harus diisi" : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -105,6 +115,8 @@ class _TambahMesinScreenState extends State<TambahMesinScreen> {
                 decoration: const InputDecoration(
                   labelText: "Broker MQTT",
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.cloud),
+                  hintText: "broker.hivemq.com",
                 ),
                 validator: (v) => v!.isEmpty ? "Broker harus diisi" : null,
               ),
@@ -112,42 +124,79 @@ class _TambahMesinScreenState extends State<TambahMesinScreen> {
               TextFormField(
                 controller: userC,
                 decoration: const InputDecoration(
-                  labelText: "Username",
+                  labelText: "Username (Opsional)",
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
                 ),
-                validator: (v) => v!.isEmpty ? "Username harus diisi" : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: passC,
                 decoration: const InputDecoration(
-                  labelText: "Password",
+                  labelText: "Password (Opsional)",
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock),
                 ),
                 obscureText: true,
-                validator: (v) => v!.isEmpty ? "Password harus diisi" : null,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: topicC,
-                decoration: const InputDecoration(
-                  labelText: "Topic",
-                  border: OutlineInputBorder(),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue[200]!),
                 ),
-                validator: (v) => v!.isEmpty ? "Topic harus diisi" : null,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'MQTT Topics (Default):',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[700],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text('• Suhu: sensor/suhu',
+                        style:
+                            TextStyle(fontSize: 12, color: Colors.grey[700])),
+                    Text('• Kelembapan Udara: sensor/kelembapan',
+                        style:
+                            TextStyle(fontSize: 12, color: Colors.grey[700])),
+                    Text('• Kelembapan Tanah: sensor/soil',
+                        style:
+                            TextStyle(fontSize: 12, color: Colors.grey[700])),
+                    Text('• Kontrol Relay: kontrol/relay',
+                        style:
+                            TextStyle(fontSize: 12, color: Colors.grey[700])),
+                    Text('• Status Relay: status/relay',
+                        style:
+                            TextStyle(fontSize: 12, color: Colors.grey[700])),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _isLoading ? null : _saveDevice,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Colors.blue[700],
+                  foregroundColor: Colors.white,
+                ),
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
+                          color: Colors.white,
                         ),
                       )
-                    : const Text("Simpan"),
+                    : const Text(
+                        "Simpan Device",
+                        style: TextStyle(fontSize: 16),
+                      ),
               ),
             ],
           ),
